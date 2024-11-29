@@ -1,1 +1,19 @@
-node_modules
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# Expo
+.expo/
+.expo-shared/
+
+# iOS
+ios/
+*.xcodeproj
+
+# Android
+android/
+*.iml
+.idea/
+
+# Others
+.env
