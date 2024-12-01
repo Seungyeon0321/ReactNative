@@ -1,15 +1,18 @@
-import { StyleSheet, Text, View, SafeAreaView } from "react-native";
-import { useState, useEffect, useCallback } from "react";
+import { StyleSheet, Text, View, SafeAreaView, Alert } from "react-native";
+import { useState, useEffect } from "react";
 import PrimaryButton from "../componenets/ui/PrimaryButton";
 import Title from "../componenets/ui/Title";
 import Colors from "../constant/Color";
 
 function createRandomNumber(min, max, exclude) {
-  console.log(min, max, exclude);
+  if (min == max) {
+    return createRandomNumber(min, max + 1, exclude);
+  }
   const rndNum = Math.floor(Math.random() * (max - min + 1)) + min;
-  if (rndNum === exclude) {
+  if (rndNum == exclude) {
     return createRandomNumber(min, max, exclude);
   }
+  console.log("step2", rndNum);
   return rndNum;
 }
 
@@ -19,11 +22,18 @@ let max = 100;
 function GameScreen({ chosenNumber, gameOver }) {
   const initialGuess = createRandomNumber(1, 100, chosenNumber);
   const [guessNumber, setGuessNumber] = useState(initialGuess);
+  console.log(guessNumber, chosenNumber);
+
+  useEffect(() => {
+    if (guessNumber == chosenNumber) {
+      gameOver();
+    }
+  }, [guessNumber, chosenNumber, gameOver]);
 
   function handleGuessNumber(direction) {
     if (
-      (direction === "lower" && guessNumber < chosenNumber) ||
-      (direction === "greater" && guessNumber > chosenNumber)
+      (direction == "lower" && guessNumber < chosenNumber) ||
+      (direction == "greater" && guessNumber > chosenNumber)
     ) {
       Alert.alert("Don't lie!", "You know that this is wrong...", [
         { text: "Sorry!", style: "cancel" },
@@ -31,18 +41,19 @@ function GameScreen({ chosenNumber, gameOver }) {
     }
 
     if (direction === "lower") {
-      max = guessNumber;
+      console.log("lower button is pressed");
+      max = guessNumber; //22
     } else {
-      min = guessNumber;
+      console.log("greater button is pressed");
+      min = guessNumber; //24
     }
-    createRandomNumber(min, max, chosenNumber);
-  }
 
-  useEffect(() => {
-    if (guessNumber === chosenNumber) {
-      gameOver();
-    }
-  }, [guessNumber, chosenNumber, gameOver]);
+    console.log("step3", min, max); //22, 24
+
+    const newRndNum = createRandomNumber(min, max, guessNumber);
+    console.log("step4", newRndNum);
+    setGuessNumber(newRndNum);
+  }
 
   return (
     <SafeAreaView style={styles.container}>

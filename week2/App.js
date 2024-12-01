@@ -22,15 +22,13 @@ export default function App() {
     setGameOver(true);
   }
 
-  const screen = !pickedNumber ? (
-    <StartGameScreen pickedNumber={pickedNumberHandler} />
+  let screen = !chosenNumber ? (
+    <StartGameScreen pickedNumberHandler={pickedNumberHandler} />
+  ) : gameOver && chosenNumber ? (
+    <GameOverScreen />
   ) : (
     <GameScreen chosenNumber={chosenNumber} gameOver={gameOverHandler} />
   );
-
-  if (gameOver && chosenNumber) {
-    screen = <GameOverScreen />;
-  }
 
   return (
     <LinearGradient

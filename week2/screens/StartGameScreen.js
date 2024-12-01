@@ -1,10 +1,12 @@
 import { View, Text, TextInput, Alert, StyleSheet } from "react-native";
 import { useState } from "react";
+import Card from "../componenets/ui/Card";
 
 import PrimaryButton from "../componenets/ui/PrimaryButton";
+// import Card from "../componenets/ui/card";
 import Colors from "../constant/Color";
 
-function StartGameScreen({ pickedNumber }) {
+function StartGameScreen({ pickedNumberHandler }) {
   const [typedNumber, setTypedNumber] = useState("");
 
   function resetButtonHandler() {
@@ -22,29 +24,33 @@ function StartGameScreen({ pickedNumber }) {
       return;
     }
 
-    pickedNumber(typedNumber);
+    pickedNumberHandler(typedNumber);
   }
 
   return (
-    <View style={styles.inputContainer}>
-      <TextInput
-        style={styles.numberInput}
-        maxLength={2}
-        keyboardType="number-pad"
-        autoCapitalize="none"
-        autoCorrect={false}
-        value={typedNumber}
-        onChangeText={setTypedNumber}
-      />
-      <View style={styles.buttonsContainer}>
-        <View style={styles.buttonContainer}>
-          <PrimaryButton onPress={resetButtonHandler}>Reset</PrimaryButton>
-        </View>
-        <View style={styles.buttonContainer}>
-          <PrimaryButton onPress={confirmButtonHandler}>Confirm</PrimaryButton>
+    <Card>
+      <View style={styles.inputContainer}>
+        <TextInput
+          style={styles.numberInput}
+          maxLength={2}
+          keyboardType="number-pad"
+          autoCapitalize="none"
+          autoCorrect={false}
+          value={typedNumber}
+          onChangeText={setTypedNumber}
+        />
+        <View style={styles.buttonsContainer}>
+          <View style={styles.buttonContainer}>
+            <PrimaryButton onPress={resetButtonHandler}>Reset</PrimaryButton>
+          </View>
+          <View style={styles.buttonContainer}>
+            <PrimaryButton onPress={confirmButtonHandler}>
+              Confirm
+            </PrimaryButton>
+          </View>
         </View>
       </View>
-    </View>
+    </Card>
   );
 }
 
