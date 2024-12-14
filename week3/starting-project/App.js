@@ -1,7 +1,7 @@
 import { StatusBar } from "expo-status-bar";
-import { StyleSheet, Text, View } from "react-native";
+import { Button } from "react-native";
 import { SafeAreaView, SafeAreaProvider } from "react-native-safe-area-context";
-
+import { Ionicons } from "@expo/vector-icons";
 import CategoriesScreen from "./screens/CategoriesScreen";
 import MealOverviewScreen from "./screens/MealOverviewScreen";
 import MealScreen from "./screens/MealScreen";
@@ -48,7 +48,13 @@ export default function App() {
               component={MealOverviewScreen}
               options={{ title: "Meal Overview" }}
             />
-            <Stack.Screen name="MealScreen" component={MealScreen} />
+            <Stack.Screen
+              name="MealScreen"
+              component={MealScreen}
+              options={{
+                title: "Meal Detail",
+              }}
+            />
           </Stack.Navigator>
         </NavigationContainer>
       </FavoritesContextProvider>
