@@ -3,7 +3,8 @@ import { CATEGORIES } from "../data/dummy-data";
 import CategoryGridTile from "../components/CategoryGridTile";
 
 function CategoriesScreen({ navigation }) {
-  function renderCategoryItem(itemData) {
+  
+    function renderCategoryItem(itemData) {
     return (
       <CategoryGridTile
         title={itemData.item.title}
