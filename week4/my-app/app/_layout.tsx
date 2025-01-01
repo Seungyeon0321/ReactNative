@@ -7,13 +7,11 @@ import { View, Text } from "react-native";
 
 import { useFonts } from "expo-font";
 import { StatusBar } from "expo-status-bar";
-import { useEffect } from "react";
 import "react-native-reanimated";
 import { createStackNavigator } from "@react-navigation/stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { Ionicons } from "@expo/vector-icons";
-import { useColorScheme } from "@/hooks/useColorScheme";
-import RightHeaderButton from "@/components/ui/RightHeaderButton";
+import RightHeaderButton from "../components/ui/RightHeaderButton";
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 
 const Stack = createStackNavigator();

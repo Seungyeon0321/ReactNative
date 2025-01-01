@@ -7,24 +7,30 @@ import {
   TextStyle,
 } from "react-native";
 import { Colors } from "@/constants/Colors";
+import { TextInputProps } from "react-native";
+
+type InputBoxProps = {
+  label: string;
+  description?: boolean;
+  value?: string;
+  textInputConfig?: TextInputProps;
+};
 
 export default function InputBox({
   label,
-  description,
-}: {
-  label: string;
-  description?: string;
-}) {
+  textInputConfig,
+  value,
+}: InputBoxProps) {
   let inputStyle: StyleProp<TextStyle>[] = [styles.input];
 
-  if (description) {
+  if (textInputConfig && textInputConfig.multiline) {
     inputStyle.push(styles.descriptionInput);
   }
 
   return (
     <View style={styles.container}>
       <Text style={styles.label}>{label}</Text>
-      <TextInput style={inputStyle} />
+      <TextInput style={inputStyle} placeholder={value} />
     </View>
   );
 }
@@ -54,6 +60,7 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   descriptionInput: {
-    height: 200,
+    minHeight: 150,
+    textAlignVertical: "top",
   },
 });

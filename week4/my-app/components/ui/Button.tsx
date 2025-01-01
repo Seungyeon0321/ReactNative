@@ -1,9 +1,15 @@
 import { Pressable, Text, StyleSheet } from "react-native";
 import { Colors } from "@/constants/Colors";
 
-export default function CustomButton({ title }: { title: string }) {
+export default function CustomButton({
+  title,
+  onPress,
+}: {
+  title: string;
+  onPress: () => void;
+}) {
   return (
-    <Pressable style={styles.button}>
+    <Pressable style={styles.button} onPress={onPress}>
       <Text>{title}</Text>
     </Pressable>
   );

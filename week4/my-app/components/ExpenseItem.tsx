@@ -1,5 +1,7 @@
 import { View, Text, Pressable, StyleSheet } from "react-native";
 import { Colors } from "@/constants/Colors";
+import { useNavigation } from "@react-navigation/native";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 
 interface ExpenseItemProps {
   date: string;
@@ -7,23 +9,46 @@ interface ExpenseItemProps {
   description: string;
 }
 
+type RootStackParamList = {
+  "manage-expense": {
+    description: string;
+    amount: number;
+    date: string;
+  };
+  // add other screens here
+};
+
+type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
+
 export default function ExpenseItem({
   date,
   amount,
   description,
 }: ExpenseItemProps) {
+  const navigation = useNavigation<NavigationProp>();
+
+  const expenseItemHandler = () => {
+    console.log(description, amount, date);
+    navigation.navigate("manage-expense", {
+      description: description,
+      amount: amount,
+      date: date,
+    });
+  };
+
   return (
     <View>
       <Pressable
         android_ripple={{ color: Colors.light.primary50 }}
         style={styles.container}
+        onPress={expenseItemHandler}
       >
         <View style={styles.description}>
           <Text style={styles.descriptionText}>{description}</Text>
           <Text>{date}</Text>
         </View>
         <View style={styles.amount}>
-          <Text style={styles.amountText}>{amount}</Text>
+          <Text style={styles.amountText}>$ {amount}</Text>
         </View>
       </Pressable>
     </View>
