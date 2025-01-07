@@ -12,14 +12,16 @@ import { TextInputProps } from "react-native";
 type InputBoxProps = {
   label: string;
   description?: boolean;
-  value?: string;
+  value?: string | number;
   textInputConfig?: TextInputProps;
+  onChangeText?: (text: string) => void;
 };
 
 export default function InputBox({
   label,
   textInputConfig,
   value,
+  onChangeText,
 }: InputBoxProps) {
   let inputStyle: StyleProp<TextStyle>[] = [styles.input];
 
@@ -30,7 +32,11 @@ export default function InputBox({
   return (
     <View style={styles.container}>
       <Text style={styles.label}>{label}</Text>
-      <TextInput style={inputStyle} placeholder={value} />
+      <TextInput
+        style={inputStyle}
+        placeholder={value?.toString()}
+        onChangeText={onChangeText}
+      />
     </View>
   );
 }

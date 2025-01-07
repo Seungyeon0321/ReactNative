@@ -1,40 +1,35 @@
 import { View, Text, StyleSheet } from "react-native";
-import ExpenseItem from "./ExpenseItem";
 import { Colors } from "@/constants/Colors";
 import { ConvertDate } from "@/util/ConvertDate";
+import ExpenseItem from "./ExpenseItem";
+import axios from "axios";
+import { useEffect, useState } from "react";
 
-const expensesLists = [
-  {
-    id: "1",
-    date: ConvertDate(new Date()),
-    amount: 100,
-    description: "Expense 1",
-  },
-  {
-    id: "2",
-    date: ConvertDate(new Date()),
-    amount: 200,
-    description: "Expense 2",
-  },
-  {
-    id: "3",
-    date: ConvertDate(new Date()),
-    amount: 300,
-    description: "Expense 3",
-  },
-];
+const API_URL = "https://react-project-a3fb8-default-rtdb.firebaseio.com/";
 
 export default function ExpenseList() {
+  const [expensesLists, setExpensesLists] = useState([]);
+
+  const fetchExpenses = async () => {
+    const response = await axios.get(`${API_URL}/expenses.json`);
+    setExpensesLists(response.data);
+    console.log(expensesLists);
+  };
+
+  useEffect(() => {
+    fetchExpenses();
+  }, []);
+
   return (
     <View style={styles.container}>
-      {expensesLists.map((expense) => (
+      {/* {expensesLists.map((expense) => (
         <ExpenseItem
           key={expense.id}
           date={expense.date}
           amount={expense.amount}
           description={expense.description}
         />
-      ))}
+      ))} */}
     </View>
   );
 }

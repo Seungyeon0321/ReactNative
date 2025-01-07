@@ -1,6 +1,7 @@
-import { View, StyleSheet } from "react-native";
+import { View, StyleSheet, Text } from "react-native";
 import ExpenseForm from "../ExpenseForm";
 import { RouteProp } from "@react-navigation/native";
+
 const ManageExpense = ({
   route,
 }: {
@@ -11,11 +12,15 @@ const ManageExpense = ({
   console.log(route.params);
   return (
     <View style={styles.container}>
-      <ExpenseForm
-        description={route.params.description}
-        amount={route.params.amount}
-        date={route.params.date}
-      />
+      {route.params ? (
+        <ExpenseForm
+          description={route.params.description}
+          amount={route.params.amount}
+          date={route.params.date}
+        />
+      ) : (
+        <ExpenseForm description="" amount={0} date="" />
+      )}
     </View>
   );
 };
