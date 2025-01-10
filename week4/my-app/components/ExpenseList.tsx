@@ -8,28 +8,33 @@ import { useEffect, useState } from "react";
 const API_URL = "https://react-project-a3fb8-default-rtdb.firebaseio.com/";
 
 export default function ExpenseList() {
-  const [expensesLists, setExpensesLists] = useState([]);
+  const [expensesLists, setExpensesLists] = useState<any[]>();
 
   const fetchExpenses = async () => {
     const response = await axios.get(`${API_URL}/expenses.json`);
-    setExpensesLists(response.data);
-    console.log(expensesLists);
+    setExpensesLists(
+      Object.keys(response.data).map((key) => ({
+        id: key,
+        ...response.data[key],
+      }))
+    );
   };
 
   useEffect(() => {
     fetchExpenses();
   }, []);
 
+  console.log(expensesLists?.map((expense) => expense));
   return (
     <View style={styles.container}>
-      {/* {expensesLists.map((expense) => (
+      {expensesLists?.map((expense) => (
         <ExpenseItem
           key={expense.id}
           date={expense.date}
           amount={expense.amount}
           description={expense.description}
         />
-      ))} */}
+      ))}
     </View>
   );
 }

@@ -34,9 +34,7 @@ export default function ExpenseForm(props: {
 
   const addExpenseHandler = async (id: string) => {
     try {
-      setIsLoading(true);
-
-      const response = await axios.post(API_URL + "expenses.json/" + id, {
+      const response = await axios.post(API_URL + "expenses.json/", {
         description: textInput.description,
         amount: textInput.amount,
         date: textInput.date,
@@ -53,6 +51,7 @@ export default function ExpenseForm(props: {
       }
     } catch (error) {
       setIsLoading(false);
+      console.log(error);
       Alert.alert("Error", "Failed to save expense");
     }
   };
@@ -108,7 +107,7 @@ export default function ExpenseForm(props: {
                 navigation.goBack();
               }}
             />
-            <CustomButton title="Add" onPress={addExpenseHandler} />
+            <CustomButton title="Add" onPress={() => addExpenseHandler} />
           </View>
         </View>
       )}
