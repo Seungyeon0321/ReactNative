@@ -13,20 +13,28 @@ type InputBoxProps = {
   label: string;
   description?: boolean;
   value?: string | number;
+  placeholder?: string;
   textInputConfig?: TextInputProps;
   onChangeText?: (text: string) => void;
+  isValid?: boolean;
 };
 
 export default function InputBox({
   label,
   textInputConfig,
   value,
+  placeholder,
   onChangeText,
+  isValid,
 }: InputBoxProps) {
   let inputStyle: StyleProp<TextStyle>[] = [styles.input];
 
   if (textInputConfig && textInputConfig.multiline) {
     inputStyle.push(styles.descriptionInput);
+  }
+
+  if (!isValid) {
+    inputStyle.push(styles.invalidInput);
   }
 
   return (
@@ -47,14 +55,12 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     justifyContent: "space-between",
     alignItems: "center",
-    borderWidth: 1,
-    borderColor: "green",
     margin: 10,
   },
   input: {
     width: "100%",
-    borderWidth: 1,
-    borderColor: Colors.light.primary50,
+    borderWidth: 2,
+    borderColor: "grey",
     padding: 10,
     borderRadius: 6,
   },
@@ -68,5 +74,8 @@ const styles = StyleSheet.create({
   descriptionInput: {
     minHeight: 150,
     textAlignVertical: "top",
+  },
+  invalidInput: {
+    borderColor: "red",
   },
 });

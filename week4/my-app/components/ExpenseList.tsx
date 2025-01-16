@@ -1,49 +1,47 @@
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, FlatList } from "react-native";
 import { Colors } from "@/constants/Colors";
-import { ConvertDate } from "@/util/ConvertDate";
+import ConvertDate from "@/util/ConvertDate";
 import ExpenseItem from "./ExpenseItem";
-import axios from "axios";
 import { useEffect, useState } from "react";
-
-const API_URL = "https://react-project-a3fb8-default-rtdb.firebaseio.com/";
+import { GetExpenses } from "./API/APIRequest";
 
 export default function ExpenseList() {
-  const [expensesLists, setExpensesLists] = useState<any[]>();
-
-  const fetchExpenses = async () => {
-    const response = await axios.get(`${API_URL}/expenses.json`);
-    setExpensesLists(
-      Object.keys(response.data).map((key) => ({
-        id: key,
-        ...response.data[key],
-      }))
-    );
-  };
+  const [expensesLists, setExpensesLists] = useState<any[]>([]);
 
   useEffect(() => {
+    const fetchExpenses = async () => {
+      try {
+        const expenses = await GetExpenses();
+        setExpensesLists(expenses);
+      } catch (error) {
+        console.error("Error fetching expenses:", error);
+      }
+    };
+
     fetchExpenses();
   }, []);
 
-  console.log(expensesLists?.map((expense) => expense));
+  console.log(expensesLists);
+
   return (
-    <View style={styles.container}>
-      {expensesLists?.map((expense) => (
+    <FlatList
+      style={styles.container}
+      data={expensesLists}
+      renderItem={({ item }) => (
         <ExpenseItem
-          key={expense.id}
-          date={expense.date}
-          amount={expense.amount}
-          description={expense.description}
+          key={item.id}
+          date={item.date.value}
+          amount={item.amount.value}
+          description={item.description.value}
         />
-      ))}
-    </View>
+      )}
+    />
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    borderWidth: 1,
-    borderColor: Colors.light.primary50,
     flexDirection: "column",
   },
 });

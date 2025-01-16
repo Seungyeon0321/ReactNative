@@ -8,32 +8,88 @@ import axios from "axios";
 const API_URL = "https://react-project-a3fb8-default-rtdb.firebaseio.com/";
 
 export default function ExpenseForm(props: {
-  description: string;
-  amount: number;
-  date: string;
+  description: {
+    value: string;
+    isValid: boolean;
+  };
+  amount: {
+    value: number;
+    isValid: boolean;
+  };
+  date: {
+    value: string;
+    isValid: boolean;
+  };
 }) {
   const [isLoading, setIsLoading] = useState(false);
   // Save the input values in the state
   const [textInput, setTextInput] = useState({
-    description: props.description,
-    amount: props.amount,
-    date: props.date,
+    description: {
+      value: props.description.value,
+      isValid: true,
+    },
+    amount: {
+      value: props.amount.value,
+      isValid: true,
+    },
+    date: {
+      value: props.date.value,
+      isValid: true,
+    },
   });
 
   const navigation = useNavigation();
 
+  // input change handler
   const inputChangeHandler = (
-    inputIdentifier: string,
+    inputIdentifier: "amount" | "date" | "description",
     enteredValue: string
   ) => {
     setTextInput((prevValues) => ({
       ...prevValues,
-      [inputIdentifier]: enteredValue,
+      [inputIdentifier]: {
+        value:
+          inputIdentifier == "date"
+            ? enteredValue.split("-").reverse().join("-")
+            : enteredValue,
+        isValid: true,
+      },
     }));
+  };
+
+  const checkValidity = () => {
+    let validedAmount =
+      textInput.amount.value > 0 && !isNaN(Number(textInput.amount.value));
+    let validedDate =
+      textInput.date.value.trim().length > 0 &&
+      textInput.date.value.trim().length < 10 &&
+      !isNaN(Number(textInput.date.value));
+    let validedDescription = textInput.description.value.trim().length > 0;
+
+    if (!validedAmount || !validedDate || !validedDescription) {
+      setTextInput((prevValues) => ({
+        ...prevValues,
+        amount: { value: textInput.amount.value, isValid: validedAmount },
+        date: { value: textInput.date.value, isValid: validedDate },
+        description: {
+          value: textInput.description.value,
+          isValid: validedDescription,
+        },
+      }));
+    }
+
+    return validedAmount && validedDate && validedDescription;
   };
 
   const addExpenseHandler = async (id: string) => {
     try {
+      let isValid = checkValidity();
+
+      if (!isValid) {
+        Alert.alert("Invalid input");
+        return;
+      }
+
       const response = await axios.post(API_URL + "expenses.json/", {
         description: textInput.description,
         amount: textInput.amount,
@@ -42,16 +98,16 @@ export default function ExpenseForm(props: {
 
       if (response.status === 200) {
         setIsLoading(false);
+        // To reset the input values
         setTextInput({
-          description: "",
-          amount: 0,
-          date: "",
+          description: { value: "", isValid: true },
+          amount: { value: 0, isValid: true },
+          date: { value: "", isValid: true },
         });
         Alert.alert("Success", "Expense saved successfully");
       }
     } catch (error) {
       setIsLoading(false);
-      console.log(error);
       Alert.alert("Error", "Failed to save expense");
     }
   };
@@ -74,7 +130,12 @@ export default function ExpenseForm(props: {
                 autoCapitalize: "none",
                 autoFocus: true,
               }}
-              value={props.amount ? props.amount.toString() : textInput.amount}
+              value={
+                props.amount
+                  ? props.amount.value.toString()
+                  : textInput.amount.value
+              }
+              isValid={textInput.amount.isValid}
               onChangeText={(text) => inputChangeHandler("amount", text)}
             />
             <InputBox
@@ -82,7 +143,8 @@ export default function ExpenseForm(props: {
               textInputConfig={{
                 maxLength: 10,
               }}
-              value={props.date ? props.date : textInput.date}
+              isValid={textInput.date.isValid}
+              value={props.date ? props.date.value : textInput.date.value}
               onChangeText={(text) => inputChangeHandler("date", text)}
             />
           </View>
@@ -94,20 +156,34 @@ export default function ExpenseForm(props: {
                 multiline: true,
               }}
               value={
-                props.description ? props.description : textInput.description
+                props.description
+                  ? props.description.value
+                  : textInput.description.value
               }
+              isValid={textInput.description.isValid}
               onChangeText={(text) => inputChangeHandler("description", text)}
             />
           </View>
+          {!textInput.amount.isValid ||
+          !textInput.date.isValid ||
+          !textInput.description.isValid ? (
+            <View style={styles.errorContainer}>
+              <Text style={styles.errorText}>Please fill a right value</Text>
+            </View>
+          ) : (
+            ""
+          )}
           <View style={styles.buttonContainer}>
             <CustomButton
               title="Cancel"
               onPress={() => {
-                console.log("cancel!");
                 navigation.goBack();
               }}
             />
-            <CustomButton title="Add" onPress={() => addExpenseHandler} />
+            <CustomButton
+              title="Add"
+              onPress={() => addExpenseHandler("123")}
+            />
           </View>
         </View>
       )}
@@ -119,10 +195,8 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     flexDirection: "column",
-    justifyContent: "center",
     alignItems: "center",
-    borderWidth: 1,
-    borderColor: "red",
+    marginTop: 50,
   },
   title: {
     fontSize: 24,
@@ -134,8 +208,6 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    borderWidth: 1,
-    borderColor: "blue",
   },
   descriptionContainer: {
     width: "100%",
@@ -146,5 +218,20 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-evenly",
     alignItems: "center",
+    marginTop: 20,
+  },
+  errorContainer: {
+    flex: 1,
+    width: "100%",
+    height: 20,
+    marginBottom: 10,
+    justifyContent: "center",
+    alignItems: "center",
+    textAlign: "center",
+  },
+  errorText: {
+    fontSize: 16,
+    fontWeight: "bold",
+    color: "red",
   },
 });
